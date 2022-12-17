@@ -1,0 +1,7 @@
+{
+  "refmap": "mixins.headerhost.refmap.json",
+  "package": "online.flowerinsnow.headerhost.mixin",
+  "client": [
+    "MixinNetworkManager"
+  ]
+}
