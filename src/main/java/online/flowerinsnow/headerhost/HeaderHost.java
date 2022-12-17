@@ -2,6 +2,7 @@ package online.flowerinsnow.headerhost;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,10 +32,12 @@ public class HeaderHost {
 
     private static final HashSet<HeaderHostEntry> entries = new HashSet<>();
 
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         loadConfiguration(new File(event.getModConfigurationDirectory(), "headerhost.xml"));
     }
 
+    @EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new HandshakeListener());
     }
