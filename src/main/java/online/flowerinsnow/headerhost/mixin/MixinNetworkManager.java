@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import online.flowerinsnow.headerhost.event.HandshakeIPSendingEvent;
+import online.flowerinsnow.saussureautils.reflect.ReflectUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,13 +23,14 @@ public class MixinNetworkManager {
     )
     public void sendPacket(Packet<?> packetIn, CallbackInfo ci) {
         if (packetIn instanceof C00Handshake) {
-            AccessorC00Handshake packet = (AccessorC00Handshake) packetIn;
-            HandshakeIPSendingEvent event = new HandshakeIPSendingEvent(packet.getIP(), packet.getPort());
+            String ip = ReflectUtils.getField(packetIn, "field_149598_b", String.class);
+            int port = ReflectUtils.getField(packetIn, "field_149599_c", Integer.TYPE);
+            HandshakeIPSendingEvent event = new HandshakeIPSendingEvent(ip, port);
             if (MinecraftForge.EVENT_BUS.post(event)) {
                 ci.cancel();
             }
-            packet.setIP(event.ip);
-            packet.setPort(event.port);
+            ReflectUtils.putField(packetIn, "field_149598_b", event.ip);
+            ReflectUtils.putField(packetIn, "field_149599_c", event.port);
         }
     }
 }
