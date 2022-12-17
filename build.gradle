@@ -1,0 +1,86 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            url 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+
+version = "1.8.1"
+group= "online.flowerinsnow"
+archivesBaseName = "headerhost"
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_20"
+    makeObfSourceJar = false
+
+    replace('@VERSION@', project.version)
+}
+
+repositories {
+    maven {
+        url 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+    maven {
+        url 'https://maven.flowerinsnow.online:10443/repository/maven-public/'
+    }
+}
+
+dependencies {
+    provided('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        exclude module: 'guava'
+        exclude module: 'commons-io'
+        exclude module: 'gson'
+    }
+
+    provided 'online.flowerinsnow:SaussureaUtils-Common:2.1.1'
+    provided 'online.flowerinsnow:SaussureaUtils-XML:2.1.1'
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    from configurations.provided.asFileTree.files.collect {
+        zipTree(it)
+    }
+
+    manifest.attributes([
+            "TweakClass": "online.flowerinsnow.headerhost.tweaker.HeaderHostTweaker"
+    ])
+}
+
+mixin {
+    add sourceSets.main, "mixins.headerhost.refmap.json"
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.encoding = 'UTF-8'
+}
