@@ -24,7 +24,7 @@ public class MixinNetworkManager {
     public void sendPacket(Packet<?> packetIn, CallbackInfo ci) {
         if (packetIn instanceof C00Handshake) {
             String ip = ReflectUtils.getField(packetIn, "field_149598_b", String.class);
-            int port = ReflectUtils.getField(packetIn, "field_149599_c", Integer.TYPE);
+            int port = ReflectUtils.getField(packetIn, "field_149599_c", Integer.class);
             HandshakeIPSendingEvent event = new HandshakeIPSendingEvent(ip, port);
             if (MinecraftForge.EVENT_BUS.post(event)) {
                 ci.cancel();
