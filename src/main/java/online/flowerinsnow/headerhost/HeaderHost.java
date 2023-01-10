@@ -27,7 +27,7 @@ import java.util.List;
 )
 @SideOnly(Side.CLIENT)
 public class HeaderHost {
-    public static final String MODID = "examplemod";
+    public static final String MODID = "headerhost";
     public static final String VERSION = "@VERSION@";
 
     private static final HashSet<HeaderHostEntry> entries = new HashSet<>();
